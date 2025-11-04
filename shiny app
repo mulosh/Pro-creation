@@ -1,0 +1,56 @@
+# Load the shiny library
+library(shiny)
+
+# Define the User Interface (UI) for the application
+# This controls the layout and appearance of your app
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar layout with input and output definitions
+    sidebarLayout(
+
+        # Sidebar panel for inputs
+        sidebarPanel(
+            # Slider input for the number of bins
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+
+        # Main panel for displaying outputs
+        mainPanel(
+            # Output: Histogram
+            plotOutput("distPlot")
+        )
+    )
+)
+
+# Define the server logic required to draw the histogram
+# This contains the instructions to build and re-build the outputs
+server <- function(input, output) {
+
+    # renderPlot generates the histogram
+    # It's 'reactive', meaning it will re-run automatically
+    # whenever the input it depends on (input$bins) changes.
+    output$distPlot <- renderPlot({
+        
+        # Get the 'faithful' dataset
+        x    <- faithful[, 2]  # Use the 'eruptions' column
+        
+        # Generate breaks for the histogram based on the input$bins slider
+        # seq() creates a sequence of numbers from min(x) to max(x)
+        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+        # Draw the histogram
+        hist(x, breaks = bins, col = '#3B82F6', border = 'white',
+             xlab = 'Waiting time to next eruption (in mins)',
+             main = 'Histogram of waiting times')
+    })
+}
+
+# Run the application by combining the UI and server
+shinyApp(ui = ui, server = server)
