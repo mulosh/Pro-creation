@@ -64,3 +64,20 @@ server <- function(input, output) {
 
 # Run the application by combining the UI and server
 shinyApp(ui = ui, server = server)
+
+# Set up account (run once; get token & secret from Connect Cloud)
+rsconnect::setAccountInfo(
+  name = "josephmulongobarasa",
+  token = "<YOUR_TOKEN>",
+  secret = "<YOUR_SECRET>",
+  server = "connect.posit.cloud"
+)
+
+# Deploy the app located at project root (app.R)
+rsconnect::deployApp(
+  appDir = ".",
+  appName = "Pro-creation",
+  account = "josephmulongobarasa",
+  server = "connect.posit.cloud",
+  entrypoint = 'app.R',
+  files = c('app.R')
